@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+WINDOW_SIZE = ENV.fetch('WINDOW_SIZE', '15').to_i
+window = nil
+epoach_of_first_occurrence = nil
+stampede_size = 0
+stampede_size_to_occurrence = []
+ARGF.each_line do |line|
+  line.chop!
+  epoch = line.to_f.to_i
+  new_window = epoch - epoch % WINDOW_SIZE
+  if new_window == window
+    if epoch <= epoach_of_first_occurrence + 1
+      stampede_size += 1
+    else
+      next
+    end
+  else
+    if stampede_size.positive?
+      stampede_size_to_occurrence[stampede_size] =
+        stampede_size_to_occurrence[stampede_size] ? stampede_size_to_occurrence[stampede_size] + 1 : 1
+    end
+    epoach_of_first_occurrence = epoch
+    stampede_size = 1
+    window = new_window
+  end
+end
+puts stampede_size_to_occurrence.map!(&:to_i)
