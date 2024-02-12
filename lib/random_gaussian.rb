@@ -18,17 +18,17 @@ class RandomGaussian
       end
       return value unless value.nil?
 
-      sample!(@mean, @stddev, @random_number_generator)
+      sample!
     end
   end
 
   private
 
-  def sample!(mean, stddev, random_number_generator)
-    theta = 2 * Math::PI * random_number_generator.rand
-    radius = Math.sqrt(-2 * Math.log(1 - random_number_generator.rand))
-    scale = stddev * radius
-    @samples << mean + scale * Math.cos(theta)
-    @samples << mean + scale * Math.sin(theta)
+  def sample!
+    theta = 2 * Math::PI * @random_number_generator.rand
+    radius = Math.sqrt(-2 * Math.log(1 - @random_number_generator.rand))
+    scale = @stddev * radius
+    @samples << @mean + scale * Math.cos(theta)
+    @samples << @mean + scale * Math.sin(theta)
   end
 end
