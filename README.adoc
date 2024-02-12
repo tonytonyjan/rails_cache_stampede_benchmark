@@ -12,7 +12,9 @@ The following command runs the benchmark for 1 hour and generates stacked histog
 [source,sh]
 ----
 docker-compose run --name benchmark -e TIMEOUT=3600 ruby \
-  rake output/200k_histogram.png output/300k_histogram.png
+  rake output/200k_histogram.png \
+       output/300k_histogram.png \
+       output/10000k_histogram.png
 docker cp benchmark:/app/output .
 ----
 
@@ -22,8 +24,9 @@ image::assets/200k_histogram.png[]
 
 image::assets/300k_histogram.png[]
 
+image::assets/10000k_histogram.png[]
 
-As the histograms show, `x_fetch` has a smaller stampede size than `fetch` in both cases.
+As the histograms show, `x_fetch` has a smaller stampede size than `fetch` in all cases.
 The higher the RPM, the more significant the difference.
 
 
@@ -58,7 +61,7 @@ Each thread is a infinite loop that calls the method `fetch` until `TIMEOUT` is 
 | FETCH_METHOD
 | Enum of `x_fetch` or `fetch`.
 
-`fetch` is the method which uses `race_condition_ttl` and `x_fetch` is the method which uses probabilistic early expiration.
+`fetch` uses `race_condition_ttl` appraoch and `x_fetch` uses probabilistic early expiration approach.
 | x_fetch
 
 | RPM
