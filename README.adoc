@@ -66,7 +66,7 @@ Each thread is a infinite loop that calls the method `fetch` until `TIMEOUT` is 
 
 | RPM
 | The number of `FETCH_METHOD` calls per minute
-| x_fetch
+| 200000
 
 | WINDOW_SIZE
 | The interval in seconds to record cache stampede size.
