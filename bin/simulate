@@ -22,7 +22,6 @@ ActiveSupport::Deprecation.behavior = :silence
 CACHE = ActiveSupport::Cache::RedisCacheStore.new(url: REDIS_URL, pool: { size: NUMBER_OF_THREADS })
 CACHE_KEY = [FETCH_METHOD, REQUEST_PERIOD].join(':')
 CACHE.delete(CACHE_KEY)
-RNG = RandomGaussian.new(mean: REQUEST_PERIOD, stddev: REQUEST_PERIOD / 10)
 
 threads = []
 start = Time.now
@@ -31,6 +30,7 @@ CACHE.send(FETCH_METHOD, CACHE_KEY, expires_in: TTL, race_condition_ttl: REGENER
 end
 NUMBER_OF_THREADS.times do
   threads << Thread.new do
+    rng = RandomGaussian.new(mean: REQUEST_PERIOD, stddev: REQUEST_PERIOD / 10)
     loop do
       break if Time.now - start > TIMEOUT
 
@@ -38,7 +38,7 @@ NUMBER_OF_THREADS.times do
         puts Time.now.to_f
         sleep REGENERATION_TIME
       end
-      sleep_time = RNG.rand
+      sleep_time = rng.rand
       sleep sleep_time if sleep_time.positive?
     end
   end

@@ -6,20 +6,12 @@ class RandomGaussian
     @random_number_generator = random_number_generator
     @mean = mean
     @stddev = stddev
-    @samples = Thread::Queue.new
+    @samples = []
   end
 
   def rand
-    loop do
-      value = begin
-        @samples.pop(true)
-      rescue ThreadError
-        nil
-      end
-      return value unless value.nil?
-
-      sample!
-    end
+    sample! if @samples.empty?
+    @samples.pop
   end
 
   private
