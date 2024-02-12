@@ -4,8 +4,14 @@ services:
     build: .
     working_dir: /app
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     environment:
       REDIS_URL: redis://redis
   redis:
     image: redis:7.2.4-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
