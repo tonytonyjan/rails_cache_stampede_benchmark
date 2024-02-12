@@ -2,7 +2,7 @@
 
 This project is a benchmark to compare the performance between `race_condition_ttl` and probabilistic early expiration to solve the cache stampede problem.
 
-The probabilistic early expiration approach is a technique to avoid the cache stampede by expiring the cache before the TTL based on the paper, https://cseweb.ucsd.edu/~avattani/papers/cache_stampede.pdf[Optimal Probabilistic Cache Stampede Prevention].
+The probabilistic early expiration approach is a technique to avoid the cache stampede by expiring the cache before the TTL based on the paper, link:assets/cache_stampede.pdf[Optimal Probabilistic Cache Stampede Prevention].
 This technique is implemented in the method `ActiveSupport::Cache::Store#x_fetch` in the file link:lib/active_support_cache_store_extension.rb[`lib/active_support_cache_store_extension.rb`]
 
 == Benchmark
@@ -18,9 +18,9 @@ docker cp benchmark:/app/output .
 
 Here is the result of the benchmark on my machine (MacOS Sonoma Version 14.2.1/2.4 GHz 8-Core Intel Core i9/32 GB 2667 MHz DDR4):
 
-image::images/200k_histogram.png[]
+image::assets/200k_histogram.png[]
 
-image::images/300k_histogram.png[]
+image::assets/300k_histogram.png[]
 
 
 As the histograms show, `x_fetch` has a smaller stampede size than `fetch` in both cases.
