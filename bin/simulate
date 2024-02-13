@@ -6,7 +6,7 @@
 require 'bundler/setup'
 Bundler.require(:default)
 require_relative '../lib/active_support_cache_store_extension'
-require_relative '../lib/random_gaussian'
+require_relative '../lib/random_exponential'
 require 'etc'
 
 TTL = ENV.fetch('TTL', '15').to_f
@@ -15,12 +15,12 @@ NUMBER_OF_THREADS = ENV.fetch('NUMBER_OF_THREADS', Etc.nprocessors).to_i
 TIMEOUT = ENV.fetch('TIMEOUT', '60').to_i
 REDIS_URL = ENV.fetch('REDIS_URL', 'redis://localhost')
 FETCH_METHOD = ENV.fetch('FETCH_METHOD', 'x_fetch').to_sym
-REQUEST_PERIOD = NUMBER_OF_THREADS * 60 / ENV.fetch('RPM', '200000').to_f
+RPM = ENV.fetch('RPM', '200000').to_f
 
 ActiveSupport::Deprecation.behavior = :silence
 
 CACHE = ActiveSupport::Cache::RedisCacheStore.new(url: REDIS_URL, pool: { size: NUMBER_OF_THREADS })
-CACHE_KEY = [FETCH_METHOD, REQUEST_PERIOD].join(':')
+CACHE_KEY = [FETCH_METHOD, RPM].join(':')
 CACHE.delete(CACHE_KEY)
 
 threads = []
@@ -30,7 +30,7 @@ CACHE.send(FETCH_METHOD, CACHE_KEY, expires_in: TTL, race_condition_ttl: REGENER
 end
 NUMBER_OF_THREADS.times do
   threads << Thread.new do
-    rng = RandomGaussian.new(mean: REQUEST_PERIOD, stddev: REQUEST_PERIOD / 10)
+    rng = RandomExponential.new(rate: RPM / NUMBER_OF_THREADS / 60)
     loop do
       break if Time.now - start > TIMEOUT
 
