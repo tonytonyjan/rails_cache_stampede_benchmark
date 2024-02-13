@@ -13,8 +13,8 @@ The following command runs the benchmark for 1 hour and generates stacked histog
 ----
 docker-compose run --name benchmark -e TIMEOUT=3600 ruby \
   rake output/200k_histogram.png \
-       output/300k_histogram.png \
-       output/10000k_histogram.png
+       output/400k_histogram.png \
+       output/800k_histogram.png
 docker cp benchmark:/app/output .
 ----
 
@@ -22,9 +22,9 @@ Here is the result of the benchmark on my machine (MacOS Sonoma Version 14.2.1/2
 
 image::assets/200k_histogram.png[]
 
-image::assets/300k_histogram.png[]
+image::assets/400k_histogram.png[]
 
-image::assets/10000k_histogram.png[]
+image::assets/800k_histogram.png[]
 
 As the histograms show, `x_fetch` has a smaller stampede size than `fetch` in all cases.
 The higher the RPM, the more significant the difference.
