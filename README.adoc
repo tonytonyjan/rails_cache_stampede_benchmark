@@ -3,11 +3,11 @@
 This project is a benchmark to compare the performance between `race_condition_ttl` and probabilistic early expiration to solve the cache stampede problem.
 
 The probabilistic early expiration approach is a technique to avoid the cache stampede by expiring the cache before the TTL based on the paper, link:assets/cache_stampede.pdf[Optimal Probabilistic Cache Stampede Prevention].
-This technique is implemented in the method `ActiveSupport::Cache::Store#x_fetch` in the file link:lib/active_support_cache_store_extension.rb[`lib/active_support_cache_store_extension.rb`]
+This technique is implemented in the method `ActiveSupport::Cache::Store#fetch(early_expiration: true)` in the file link:lib/active_support_cache_store_extension.rb[`lib/active_support_cache_store_extension.rb`]
 
 == Benchmark
 
-The following command runs the benchmark for 1 hour and generates stacked histograms comparing stampede size between `fetch` and `x_fetch`:
+The following command runs the benchmark for 1 hour and generates stacked histograms comparing stampede size between `:race_condition_ttl` and `:early_expiration`:
 
 [source,sh]
 ----
@@ -26,7 +26,7 @@ image::assets/400k_histogram.png[]
 
 image::assets/800k_histogram.png[]
 
-As the histograms show, `x_fetch` has a smaller stampede size than `fetch` in all cases.
+As the histograms show, `early_expiration` has a smaller stampede size than `fetch` in all cases.
 The higher the RPM, the more significant the difference.
 
 
